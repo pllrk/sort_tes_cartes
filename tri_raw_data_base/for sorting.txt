@@ -1,0 +1,10 @@
+
+In bash :
+
+1) touch all_card_fr_en.json && echo [ > all_card_fr_en.json
+
+2) cat all-card.json | grep '"lang":en"' > all_card_fr_en.json
+
+3) cat all-card.json | grep '"lang":fr"' >> all_card_fr_en.json
+
+4) echo ] >> all_card_fr_en.json

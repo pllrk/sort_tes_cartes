@@ -1,0 +1,7 @@
+https://docs.python.org/fr/3/library/tkinter.html#module-_tkinter
+
+https://www.educative.io/answers/how-to-import-tkinter-in-python
+
+https://scryfall.com/docs/api
+
+https://scryfall.com/docs/api/bulk-data
