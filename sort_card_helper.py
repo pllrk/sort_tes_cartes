@@ -109,9 +109,7 @@ def on_key_release(event):
 						list_of_results.append(auto_complete_name)
 		creation_auto_button(list_of_results)
 	global check_for_button
-	if check_for_button == 1:
-		while (len(list_of_results)):
-			radiobutton.destroy
+#	if check_for_button == 1:
 	for x in list_of_results:
 		print(x)
 
