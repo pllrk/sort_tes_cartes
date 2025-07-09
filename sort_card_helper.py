@@ -11,10 +11,10 @@ window.geometry()
 window.config(bg= '#2f2f2f')
 
 ##### json managment #####
-with open('./tri_raw_data_base/path.json', 'r') as openfile:
+with open('./tri_raw_data_base/results.json', 'r') as openfile:
 	json_object = json.load(openfile)
-card_list = json_object['test_data'] #for test
-#card_list = json_object['big_data'] #for real
+#card_list = json_object['test_data'] #for test
+card_list = json_object['big_data'] #for real
 
 ####
 
@@ -37,60 +37,45 @@ label.pack()
 
 ##### entry box text #####
 
-card_name = ""
-list_of_results = []
 
 #auto_complete
 
-
-
-
+card_name = ""
+check_for_button = 0
 frame_auto_button = Frame(window)
 frame_auto_button.pack()
+list_of_button = []
 
-#def destroy_auto_button():
-##	while frame_auto_button:
-##		frame_auto_button.destroy()
-#
-#delete_frame = Button(window, 
-#			 text="Delete frame",
-#			 font=('Arial', 20), 
-#			 command = destroy_auto_button(),
-#			 wraplength=600)
-#delete_frame.pack()
-
-	
-check_for_button = 0
+def clear_buttons():
+    global list_of_button
+    for button in list_of_button:
+        button.destroy()
+    list_of_button.clear()
 
 def creation_auto_button(list_of_results):
+	global list_of_button
+	clear_buttons()
+	index_list_of_button = IntVar()
 	for j in range(len(list_of_results)):
-			
-			
-			radiobutton = Button(frame_auto_button, 
-									font=('Arial', 20), 
-									text=list_of_results[j], 
-									#variable= select_suggested_choice,
-									relief=RAISED,
-									bd = 5,
-									padx = 5,
-									pady = 5,
-									fg='#49119B',
-									bg= '#7954AB',
-									activeforeground='#5E3B91',
-									activebackground='#9B7DA6',
-									width= 10)
-									#value=index)
-			radiobutton.pack(side = LEFT)
-
-			print (j)
-	global check_for_button
-	check_for_button = 1
-	print ("j'ai changé la glbal")
-
-select_suggested_choice = IntVar()
-
-def on_key_release(event):
+		radiobutton = Radiobutton(frame_auto_button, 
+								font=('Arial', 20), 
+								text=list_of_results[j],
+								value=j, 
+								variable= index_list_of_button,
+								relief=RAISED,
+								bd = 5,
+								padx = 5,
+								pady = 5,
+								fg='#49119B',
+								bg= '#7954AB',
+								activeforeground='#5E3B91',
+								activebackground='#9B7DA6',
+								indicatoron= 0)
+		radiobutton.pack(anchor="w")
+		list_of_button.append(radiobutton)
+		print (j)
 	
+def on_key_release(event):
 	if event.keysym in ('Shift_L', 'Shift_R', 'Control_L', 'Control_R', 'Alt_L', 'Alt_R', 'Left', 'Right', 'Up', 'Down'):
 		return
 	list_of_results = []
@@ -108,8 +93,6 @@ def on_key_release(event):
 					if auto_complete_name not in list_of_results and len(list_of_results) <= 5:
 						list_of_results.append(auto_complete_name)
 		creation_auto_button(list_of_results)
-	global check_for_button
-#	if check_for_button == 1:
 	for x in list_of_results:
 		print(x)
 
@@ -224,6 +207,7 @@ for index in range(len(colors)):
 	radiobutton = Radiobutton(window, 
 						   font=('Arial', 20), 
 						   text=colors[index], 
+						   value=index,
 						   variable= couleur,
 						   relief=RAISED,
 						   bd = 5,
@@ -234,8 +218,7 @@ for index in range(len(colors)):
 						   activeforeground='#5E3B91',
 						   activebackground='#9B7DA6',
 						   indicatoron= 0,
-						   width= 10,
-						   value=index)
+						   width= 10)
 	radiobutton.pack()
 
 
