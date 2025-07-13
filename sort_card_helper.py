@@ -3,6 +3,8 @@ from tkinter import *
 import requests
 import json
 from tkinter import filedialog
+import os
+from PIL import Image, ImageTk
 
 #create window
 window = Tk()
@@ -11,10 +13,10 @@ window.geometry()
 window.config(bg= '#2f2f2f')
 
 ##### json managment #####
-with open('./tri_raw_data_base/results.json', 'r') as openfile:
+with open('./tri_raw_data_base/path.json', 'r') as openfile:
 	json_object = json.load(openfile)
-#card_list = json_object['test_data'] #for test
-card_list = json_object['big_data'] #for real
+card_list = json_object['test_data'] #for test
+#card_list = json_object['big_data'] #for real
 
 ####
 
@@ -45,6 +47,7 @@ check_for_button = 0
 frame_auto_button = Frame(window)
 frame_auto_button.pack()
 list_of_button = []
+list_of_sets_name_global = []
 
 def clear_buttons():
     global list_of_button
@@ -73,14 +76,51 @@ def creation_auto_button(list_of_results):
 								indicatoron= 0)
 		radiobutton.pack(anchor="w")
 		list_of_button.append(radiobutton)
-		print (j)
-	
+
+def clear_buttons_set_name():
+    global list_of_sets_name_global
+    for button in list_of_sets_name_global:
+        button.destroy()
+    list_of_sets_name_global.clear()
+
+def creation_auto_set_name(list_of_set_names):
+	global list_of_sets_name_global
+	clear_buttons_set_name()
+	index_list_of_button_set_name = IntVar()
+	for j in range(len(list_of_set_names)):
+		png_path = os.path.join("edhrec_set_png", f"{list_of_set_names[j]}.png")
+		try:
+			image = Image.open(png_path)
+			image_set = ImageTk.PhotoImage(image)
+		except Exception as e:
+			raise Exception(f"Failed to load image: {e}")
+		print(png_path)
+		image_set_button = Radiobutton(frame_auto_button, 
+								font=('Arial', 20), 
+								text=list_of_set_names[j],
+								value=j, 
+								variable= index_list_of_button_set_name,
+								relief=RAISED,
+								bd = 5,
+								padx = 5,
+								pady = 5,
+								fg='#49119B',
+								bg= '#7954AB',
+								activeforeground='#5E3B91',
+								activebackground='#9B7DA6',
+								image = image_set,
+								indicatoron= 0)
+		image_set_button.pack(anchor="w")
+		list_of_sets_name_global.append(image_set_button)
+
 def on_key_release(event):
 	if event.keysym in ('Shift_L', 'Shift_R', 'Control_L', 'Control_R', 'Alt_L', 'Alt_R', 'Left', 'Right', 'Up', 'Down'):
 		return
 	list_of_results = []
+	list_of_set_names = []
 	card_name = entry.get().strip().lower()
 	auto_complete_name = ""
+	set_name = ""
 	i = 0
 	if card_name:
 		for card in card_list:
@@ -89,13 +129,19 @@ def on_key_release(event):
 				continue
 			if len(card_name) >= 4:
 				auto_complete_name = card['printed_name'].lower()
+				set_name = card['set_name']
+				print(set_name)
 				if (auto_complete_name.startswith(card_name) == TRUE):
 					if auto_complete_name not in list_of_results and len(list_of_results) <= 5:
 						list_of_results.append(auto_complete_name)
+					if set_name not in list_of_set_names and len(list_of_set_names) <= 5:
+						set_name = set_name.replace(" ", "_")
+						list_of_set_names.append(set_name)
 		creation_auto_button(list_of_results)
+		creation_auto_set_name(list_of_set_names)
 	for x in list_of_results:
 		print(x)
-
+	
 #entry box
 entry = Entry(window,
 			  font=('Arial', 28),
@@ -147,9 +193,6 @@ submit_button.pack(side= LEFT)
 #							padx = 5,
 #							pady = 5)
 #auto_complete_button.pack(side= LEFT)
-
-
-
 
 
 # A relier avec le save de doc en dessous (le button submit)

@@ -6,6 +6,7 @@ from io import BytesIO
 import re
 import subprocess
 import tempfile
+import json
 
 # Set up headers to mimic a browser request
 headers = {
@@ -16,7 +17,7 @@ headers = {
 url = 'https://edhrec.com/sets'
 
 # Directory to save images
-output_dir = 'edhrec_set_images'
+output_dir = 'edhrec_set_png'
 svg_dir = 'edhrec_set_svgs'  # Directory for raw SVGs if conversion fails
 if not os.path.exists(output_dir):
     os.makedirs(output_dir)
@@ -45,7 +46,7 @@ def download_and_convert_image(img_url, set_name):
         
         # Sanitize set name for filename
         sanitized_name = sanitize_filename(set_name)
-        output_path = os.path.join(output_dir, f'{sanitized_name}.jpg')
+        output_path = os.path.join(output_dir, f'{sanitized_name}.png')
         svg_path = os.path.join(svg_dir, f'{sanitized_name}.svg')
         
         # Save raw SVG for debugging
