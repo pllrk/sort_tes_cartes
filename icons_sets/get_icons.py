@@ -59,11 +59,7 @@ def download_and_convert_image(img_url, set_name):
             try:
                 # Use ImageMagick to convert SVG to PNG
                 with tempfile.NamedTemporaryFile(suffix='.png', delete=False) as temp_png:
-                    subprocess.run(
-                        ['convert', svg_path, temp_png.name],
-                        check=True,
-                        capture_output=True
-                    )
+                    subprocess.run(['convert', svg_path, temp_png.name], check=True, capture_output=True)
                     img = Image.open(temp_png.name)
                     # Convert to RGB if necessary
                     if img.mode in ('RGBA', 'P'):

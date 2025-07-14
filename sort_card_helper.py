@@ -129,13 +129,13 @@ def on_key_release(event):
 				continue
 			if len(card_name) >= 4:
 				auto_complete_name = card['printed_name'].lower()
-				set_name = card['set_name']
+				set_name = card['set']
 				print(set_name)
 				if (auto_complete_name.startswith(card_name) == TRUE):
 					if auto_complete_name not in list_of_results and len(list_of_results) <= 5:
 						list_of_results.append(auto_complete_name)
 					if set_name not in list_of_set_names and len(list_of_set_names) <= 5:
-						set_name = set_name.replace(" ", "_")
+						#set_name = set_name.replace(" ", "_")
 						list_of_set_names.append(set_name)
 		creation_auto_button(list_of_results)
 		creation_auto_set_name(list_of_set_names)
