@@ -1,5 +1,6 @@
 #import the tkinter module
 from tkinter import *
+import tkinter as tk
 import requests
 import json
 from tkinter import filedialog
@@ -13,10 +14,10 @@ window.geometry()
 window.config(bg= '#2f2f2f')
 
 ##### json managment #####
-with open('./tri_raw_data_base/path.json', 'r') as openfile:
+with open('./tri_raw_data_base/results.json', 'r') as openfile:
 	json_object = json.load(openfile)
-card_list = json_object['test_data'] #for test
-#card_list = json_object['big_data'] #for real
+#card_list = json_object['test_data'] #for test
+card_list = json_object['big_data'] #for real
 
 ####
 
@@ -48,12 +49,15 @@ frame_auto_button = Frame(window)
 frame_auto_button.pack()
 list_of_button = []
 list_of_sets_name_global = []
+image_reference_global = []
 
 def clear_buttons():
     global list_of_button
     for button in list_of_button:
         button.destroy()
     list_of_button.clear()
+
+
 
 def creation_auto_button(list_of_results):
 	global list_of_button
@@ -83,35 +87,53 @@ def clear_buttons_set_name():
         button.destroy()
     list_of_sets_name_global.clear()
 
+def test():
+	print("caca")
+
+def clear_images():
+	global image_reference_global
+	for images in image_reference_global:
+		images.destroy()
+	image_reference_global.clear()
+
 def creation_auto_set_name(list_of_set_names):
 	global list_of_sets_name_global
+	global image_reference_global
 	clear_buttons_set_name()
+	#clear_images()
 	index_list_of_button_set_name = IntVar()
 	for j in range(len(list_of_set_names)):
 		png_path = os.path.join("edhrec_set_png", f"{list_of_set_names[j]}.png")
 		try:
 			image = Image.open(png_path)
-			image_set = ImageTk.PhotoImage(image)
+			image = image.resize((150, 150), Image.LANCZOS)
+			photo = ImageTk.PhotoImage(image)
 		except Exception as e:
 			raise Exception(f"Failed to load image: {e}")
+		#image = tk.PhotoImage(png_path)
 		print(png_path)
 		image_set_button = Radiobutton(frame_auto_button, 
-								font=('Arial', 20), 
-								text=list_of_set_names[j],
-								value=j, 
-								variable= index_list_of_button_set_name,
-								relief=RAISED,
-								bd = 5,
-								padx = 5,
-								pady = 5,
-								fg='#49119B',
-								bg= '#7954AB',
-								activeforeground='#5E3B91',
-								activebackground='#9B7DA6',
-								image = image_set,
-								indicatoron= 0)
-		image_set_button.pack(anchor="w")
+									font=('Arial', 20), 
+									text=list_of_set_names[j],
+									value=j,
+									variable= index_list_of_button_set_name,
+									relief=RAISED,
+									#compound='bottom',
+									command= test,
+									bd = 5,
+									padx = 5,
+									pady = 5,
+									width=150,
+									height=150,
+									fg='#49119B',
+									bg= '#7954AB',
+									activeforeground='#5E3B91',
+									activebackground='#9B7DA6',
+									image = photo,
+									indicatoron= 0)
+		image_set_button.pack()
 		list_of_sets_name_global.append(image_set_button)
+		image_reference_global.append(photo)
 
 def on_key_release(event):
 	if event.keysym in ('Shift_L', 'Shift_R', 'Control_L', 'Control_R', 'Alt_L', 'Alt_R', 'Left', 'Right', 'Up', 'Down'):
@@ -132,9 +154,9 @@ def on_key_release(event):
 				set_name = card['set']
 				print(set_name)
 				if (auto_complete_name.startswith(card_name) == TRUE):
-					if auto_complete_name not in list_of_results and len(list_of_results) <= 5:
+					if auto_complete_name not in list_of_results and len(list_of_results) <= 4:
 						list_of_results.append(auto_complete_name)
-					if set_name not in list_of_set_names and len(list_of_set_names) <= 5:
+					if set_name not in list_of_set_names and len(list_of_set_names) <= 4:
 						#set_name = set_name.replace(" ", "_")
 						list_of_set_names.append(set_name)
 		creation_auto_button(list_of_results)
