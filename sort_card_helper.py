@@ -6,6 +6,8 @@ import json
 from tkinter import filedialog
 import os
 from PIL import Image, ImageTk
+import time
+import threading
 
 #create window
 window = Tk()
@@ -56,8 +58,6 @@ def clear_buttons():
     for button in list_of_button:
         button.destroy()
     list_of_button.clear()
-
-
 
 def creation_auto_button(list_of_results):
 	global list_of_button
@@ -111,7 +111,7 @@ def creation_auto_set_name(list_of_set_names):
 		except Exception as e:
 			raise Exception(f"Failed to load image: {e}")
 		#image = tk.PhotoImage(png_path)
-		print(png_path)
+		#print(png_path)
 		image_set_button = Radiobutton(frame_auto_button, 
 									font=('Arial', 20), 
 									text=list_of_set_names[j],
@@ -135,6 +135,17 @@ def creation_auto_set_name(list_of_set_names):
 		list_of_sets_name_global.append(image_set_button)
 		image_reference_global.append(photo)
 
+current_timer = None
+
+def trigger_timer(list_of_set_names):
+    global current_timer
+    # Cancel any existing timer
+    if current_timer is not None:
+        current_timer.cancel()
+    # Start a new timer that calls creation_auto_set_name after 0.5 seconds
+    current_timer = threading.Timer(0.05, creation_auto_set_name, args=[list_of_set_names])
+    current_timer.start()
+
 def on_key_release(event):
 	if event.keysym in ('Shift_L', 'Shift_R', 'Control_L', 'Control_R', 'Alt_L', 'Alt_R', 'Left', 'Right', 'Up', 'Down'):
 		return
@@ -152,15 +163,15 @@ def on_key_release(event):
 			if len(card_name) >= 4:
 				auto_complete_name = card['printed_name'].lower()
 				set_name = card['set']
-				print(set_name)
-				if (auto_complete_name.startswith(card_name) == TRUE):
+				#print(set_name)
+				if auto_complete_name.startswith(card_name):
 					if auto_complete_name not in list_of_results and len(list_of_results) <= 4:
 						list_of_results.append(auto_complete_name)
-					if set_name not in list_of_set_names and len(list_of_set_names) <= 4:
+					if set_name not in list_of_set_names and len(list_of_set_names) <= 4: #à changer quand il y aura une meilleur mise en forme
 						#set_name = set_name.replace(" ", "_")
 						list_of_set_names.append(set_name)
 		creation_auto_button(list_of_results)
-		creation_auto_set_name(list_of_set_names)
+		trigger_timer(list_of_set_names)
 	for x in list_of_results:
 		print(x)
 	
