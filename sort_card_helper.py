@@ -18,7 +18,7 @@ window.config(bg= '#2f2f2f')
 ##### json managment #####
 with open('./tri_raw_data_base/results.json', 'r') as openfile:
 	json_object = json.load(openfile)
-#card_list = json_object['test_data'] #for test
+ #card_list = json_object['test_data'] #for test
 card_list = json_object['big_data'] #for real
 
 ####
@@ -59,6 +59,14 @@ def clear_buttons():
         button.destroy()
     list_of_button.clear()
 
+def select_name(list_of_results):
+	tmp = list_of_results
+	clear_buttons
+	entry.delete(0, END)
+	entry.insert(0, tmp)
+	entry.event_generate('<KeyRelease-Return>')
+	
+
 def creation_auto_button(list_of_results):
 	global list_of_button
 	clear_buttons()
@@ -67,7 +75,7 @@ def creation_auto_button(list_of_results):
 		radiobutton = Radiobutton(frame_auto_button, 
 								font=('Arial', 20), 
 								text=list_of_results[j],
-								value=j, 
+								value=j,
 								variable= index_list_of_button,
 								relief=RAISED,
 								bd = 5,
@@ -77,6 +85,7 @@ def creation_auto_button(list_of_results):
 								bg= '#7954AB',
 								activeforeground='#5E3B91',
 								activebackground='#9B7DA6',
+								command = lambda value = j : select_name(list_of_results[value]),
 								indicatoron= 0)
 		radiobutton.pack(anchor="w")
 		list_of_button.append(radiobutton)
@@ -143,7 +152,7 @@ def trigger_timer(list_of_set_names):
     if current_timer is not None:
         current_timer.cancel()
     # Start a new timer that calls creation_auto_set_name after 0.5 seconds
-    current_timer = threading.Timer(0.05, creation_auto_set_name, args=[list_of_set_names])
+    current_timer = threading.Timer(0.1, creation_auto_set_name, args=[list_of_set_names])
     current_timer.start()
 
 def on_key_release(event):
